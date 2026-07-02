@@ -1,0 +1,19 @@
+{
+    "name": "wc-core",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/wc-core/src",
+    "projectType": "library",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/apps/wc-core",
+                "main": "apps/wc-core/src/index.ts",
+                "tsConfig": "apps/wc-core/tsconfig.lib.json",
+                "assets": ["apps/wc-core/*.md"]
+            }
+        }
+    }
+}
