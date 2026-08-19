@@ -22,8 +22,8 @@ export interface WCCoreConfig {
 
 const DEFAULT_INNER_BACKGROUND_GRADIENT: GradientColors = {
     firstColor: '#2f8f2f',
-    secondColor: '#3fa63f'
-}
+    secondColor: '#3fa63f',
+};
 
 export const DEFAULT_WC_CONFIG: WCCoreConfig = {
     field: {
@@ -31,6 +31,6 @@ export const DEFAULT_WC_CONFIG: WCCoreConfig = {
         bottomOffset: 5,
         outerBackground: DEFAULT_INNER_BACKGROUND_GRADIENT.firstColor,
         innerBackground: DEFAULT_INNER_BACKGROUND_GRADIENT,
-        lineColor: '#FFFFFF'
-    }
-} 
+        lineColor: '#FFFFFF',
+    },
+};

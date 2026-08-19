@@ -5,9 +5,7 @@ import { run } from '@wc-football-caps/wc-core';
 @Component({
     selector: 'app-playground',
     imports: [CommonModule],
-    template: `
-       <canvas id="wc-canvas-playground"></canvas>
-    `,
+    template: ` <canvas id="wc-canvas-playground"></canvas> `,
     styles: `
         #wc-canvas-playground {
             display: block;

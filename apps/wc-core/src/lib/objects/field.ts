@@ -1,12 +1,12 @@
-import { FieldConfig, GradientColors } from "../config/config";
+import { FieldConfig, GradientColors } from '../config/config';
 
 export interface FieldDimensions {
     width: number;
     height: number;
-    topLeft: { x: number, y: number };
-    topRight: { x: number, y: number };
-    bottomLeft: { x: number, y: number };
-    bottomRight: { x: number, y: number };
+    topLeft: { x: number; y: number };
+    topRight: { x: number; y: number };
+    bottomLeft: { x: number; y: number };
+    bottomRight: { x: number; y: number };
 }
 
 const LINE_WIDTH = 3;
@@ -23,7 +23,7 @@ export class Field {
     private penaltyAreaHeight = 0;
     private leftPenaltySpot = { x: 0, y: 0 };
     private rightPenaltySpot = { x: 0, y: 0 };
-    
+
     getWidth() {
         return this.width;
     }
@@ -32,14 +32,14 @@ export class Field {
         return this.height;
     }
 
-    getDimensions(): FieldDimensions     {
+    getDimensions(): FieldDimensions {
         return {
             width: this.width,
             height: this.height,
             topLeft: this.topLeft,
             topRight: this.topRight,
             bottomLeft: this.bottomLeft,
-            bottomRight: this.bottomRight
+            bottomRight: this.bottomRight,
         };
     }
 
@@ -73,33 +73,69 @@ export class Field {
         const bottomOffsetPercentage = (cssHeight * config.bottomOffset) / 100;
 
         this.width = Math.max(0, cssWidth - 2 * offsetPercentage);
-        this.height = Math.max(0, cssHeight - offsetPercentage - bottomOffsetPercentage);
+        this.height = Math.max(
+            0,
+            cssHeight - offsetPercentage - bottomOffsetPercentage,
+        );
         this.topLeft = { x: offsetPercentage, y: offsetPercentage };
-        this.topRight = { x: offsetPercentage + this.width, y: offsetPercentage };
-        this.bottomLeft = { x: offsetPercentage, y: offsetPercentage + this.height };
-        this.bottomRight = { x: offsetPercentage + this.width, y: offsetPercentage + this.height };
+        this.topRight = {
+            x: offsetPercentage + this.width,
+            y: offsetPercentage,
+        };
+        this.bottomLeft = {
+            x: offsetPercentage,
+            y: offsetPercentage + this.height,
+        };
+        this.bottomRight = {
+            x: offsetPercentage + this.width,
+            y: offsetPercentage + this.height,
+        };
         this.penaltyAreaWidth = this.width / 9;
         this.penaltyAreaHeight = this.height * 0.4;
-        this.leftPenaltySpot = { x: this.topLeft.x + this.width * 0.08, y: this.topLeft.y + this.height / 2 };
-        this.rightPenaltySpot = { x: this.topLeft.x + this.width * 0.92, y: this.topLeft.y + this.height / 2 };
+        this.leftPenaltySpot = {
+            x: this.topLeft.x + this.width * 0.08,
+            y: this.topLeft.y + this.height / 2,
+        };
+        this.rightPenaltySpot = {
+            x: this.topLeft.x + this.width * 0.92,
+            y: this.topLeft.y + this.height / 2,
+        };
 
-
-        this.drawOuterArea(canvas, ctx, cssWidth, cssHeight, config.outerBackground);
+        this.drawOuterArea(
+            canvas,
+            ctx,
+            cssWidth,
+            cssHeight,
+            config.outerBackground,
+        );
         this.drawInnerField(ctx, config.innerBackground, config.lineColor);
         this.drawCenterLine(ctx, config.lineColor);
         this.drawPenaltyAreas(ctx, config.lineColor);
         this.drawCornerArcs(ctx, config.lineColor);
     }
 
-    private drawOuterArea(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, cssWidth: number, cssHeight: number, background: string) {
+    private drawOuterArea(
+        canvas: HTMLCanvasElement,
+        ctx: CanvasRenderingContext2D,
+        cssWidth: number,
+        cssHeight: number,
+        background: string,
+    ) {
         ctx.clearRect(0, 0, cssWidth, cssHeight);
         ctx.fillStyle = background;
         ctx.fillRect(0, 0, cssWidth, cssHeight);
         canvas.style.background = background;
     }
 
-    private drawInnerField(ctx: CanvasRenderingContext2D, background: string | GradientColors, lineColor: string) {
-        const fill = typeof background === "string" ? background : this.getGradientFromColors(ctx, background);
+    private drawInnerField(
+        ctx: CanvasRenderingContext2D,
+        background: string | GradientColors,
+        lineColor: string,
+    ) {
+        const fill =
+            typeof background === 'string'
+                ? background
+                : this.getGradientFromColors(ctx, background);
         ctx.fillStyle = fill;
         ctx.fillRect(this.topLeft.x, this.topLeft.y, this.width, this.height);
         ctx.strokeStyle = lineColor;
@@ -107,39 +143,47 @@ export class Field {
         ctx.strokeRect(this.topLeft.x, this.topLeft.y, this.width, this.height);
     }
 
-    private getGradientFromColors(ctx: CanvasRenderingContext2D, colors: GradientColors): CanvasGradient {
-        const gradient = ctx.createLinearGradient(this.topLeft.x, this.topLeft.y, this.topRight.x, this.topRight.y);
+    private getGradientFromColors(
+        ctx: CanvasRenderingContext2D,
+        colors: GradientColors,
+    ): CanvasGradient {
+        const gradient = ctx.createLinearGradient(
+            this.topLeft.x,
+            this.topLeft.y,
+            this.topRight.x,
+            this.topRight.y,
+        );
         const { firstColor, secondColor } = colors;
 
-        gradient.addColorStop(0.00, firstColor);
-        gradient.addColorStop(0.10, firstColor);
+        gradient.addColorStop(0.0, firstColor);
+        gradient.addColorStop(0.1, firstColor);
 
-        gradient.addColorStop(0.10, secondColor);
-        gradient.addColorStop(0.20, secondColor);
+        gradient.addColorStop(0.1, secondColor);
+        gradient.addColorStop(0.2, secondColor);
 
-        gradient.addColorStop(0.20, firstColor);
-        gradient.addColorStop(0.30, firstColor);
+        gradient.addColorStop(0.2, firstColor);
+        gradient.addColorStop(0.3, firstColor);
 
-        gradient.addColorStop(0.30, secondColor);
-        gradient.addColorStop(0.40, secondColor);
+        gradient.addColorStop(0.3, secondColor);
+        gradient.addColorStop(0.4, secondColor);
 
-        gradient.addColorStop(0.40, firstColor);
-        gradient.addColorStop(0.50, firstColor);
+        gradient.addColorStop(0.4, firstColor);
+        gradient.addColorStop(0.5, firstColor);
 
-        gradient.addColorStop(0.50, secondColor);
-        gradient.addColorStop(0.60, secondColor);
+        gradient.addColorStop(0.5, secondColor);
+        gradient.addColorStop(0.6, secondColor);
 
-        gradient.addColorStop(0.60, firstColor);
-        gradient.addColorStop(0.70, firstColor);
+        gradient.addColorStop(0.6, firstColor);
+        gradient.addColorStop(0.7, firstColor);
 
-        gradient.addColorStop(0.70, secondColor);
-        gradient.addColorStop(0.80, secondColor);
+        gradient.addColorStop(0.7, secondColor);
+        gradient.addColorStop(0.8, secondColor);
 
-        gradient.addColorStop(0.80, firstColor);
-        gradient.addColorStop(0.90, firstColor  );
+        gradient.addColorStop(0.8, firstColor);
+        gradient.addColorStop(0.9, firstColor);
 
-        gradient.addColorStop(0.90, secondColor);
-        gradient.addColorStop(1.00, secondColor);
+        gradient.addColorStop(0.9, secondColor);
+        gradient.addColorStop(1.0, secondColor);
 
         return gradient;
     }
@@ -155,10 +199,23 @@ export class Field {
         ctx.lineTo(topLeftLineCenter, this.topLeft.y + this.height);
         ctx.stroke();
 
-        const centerPoint = { x: topLeftLineCenter, y: this.topLeft.y + this.height / 2 };
-        const centerCircle = { x: centerPoint.x, y: centerPoint.y, radius: this.height / 7 };
+        const centerPoint = {
+            x: topLeftLineCenter,
+            y: this.topLeft.y + this.height / 2,
+        };
+        const centerCircle = {
+            x: centerPoint.x,
+            y: centerPoint.y,
+            radius: this.height / 7,
+        };
         ctx.beginPath();
-        ctx.arc(centerCircle.x, centerCircle.y, centerCircle.radius, 0, 2 * Math.PI);
+        ctx.arc(
+            centerCircle.x,
+            centerCircle.y,
+            centerCircle.radius,
+            0,
+            2 * Math.PI,
+        );
         ctx.stroke();
 
         ctx.beginPath();
@@ -173,45 +230,90 @@ export class Field {
 
         // Left penalty area
         ctx.beginPath();
-        ctx.rect(this.topLeft.x, this.topLeft.y + this.height * 0.3, this.penaltyAreaWidth, this.penaltyAreaHeight);
+        ctx.rect(
+            this.topLeft.x,
+            this.topLeft.y + this.height * 0.3,
+            this.penaltyAreaWidth,
+            this.penaltyAreaHeight,
+        );
         ctx.stroke();
         // Left penalty spot
         ctx.beginPath();
-        ctx.arc(this.leftPenaltySpot.x, this.leftPenaltySpot.y, DOT_RADIUS, 0, 2 * Math.PI);
+        ctx.arc(
+            this.leftPenaltySpot.x,
+            this.leftPenaltySpot.y,
+            DOT_RADIUS,
+            0,
+            2 * Math.PI,
+        );
         ctx.fillStyle = lineColor;
         ctx.fill();
 
         // Right penalty area
         ctx.beginPath();
-        ctx.rect(this.topRight.x - this.penaltyAreaWidth, this.topRight.y + this.height * 0.3, this.penaltyAreaWidth, this.penaltyAreaHeight);
+        ctx.rect(
+            this.topRight.x - this.penaltyAreaWidth,
+            this.topRight.y + this.height * 0.3,
+            this.penaltyAreaWidth,
+            this.penaltyAreaHeight,
+        );
         ctx.stroke();
         // Right penalty spot
         ctx.beginPath();
-        ctx.arc(this.rightPenaltySpot.x, this.rightPenaltySpot.y, DOT_RADIUS, 0, 2 * Math.PI);
+        ctx.arc(
+            this.rightPenaltySpot.x,
+            this.rightPenaltySpot.y,
+            DOT_RADIUS,
+            0,
+            2 * Math.PI,
+        );
         ctx.fillStyle = lineColor;
-        ctx.fill(); 
+        ctx.fill();
 
         const goalAreaWidth = this.penaltyAreaWidth / 2.5;
         const goalAreaHeight = this.penaltyAreaHeight / 2;
 
         // left goal area
         ctx.beginPath();
-        ctx.rect(this.topLeft.x, this.topLeft.y + this.height * 0.4, goalAreaWidth, goalAreaHeight);
+        ctx.rect(
+            this.topLeft.x,
+            this.topLeft.y + this.height * 0.4,
+            goalAreaWidth,
+            goalAreaHeight,
+        );
         ctx.stroke();
 
         // right goal area
         ctx.beginPath();
-        ctx.rect(this.topRight.x - goalAreaWidth, this.topRight.y + this.height * 0.4, goalAreaWidth, goalAreaHeight);
+        ctx.rect(
+            this.topRight.x - goalAreaWidth,
+            this.topRight.y + this.height * 0.4,
+            goalAreaWidth,
+            goalAreaHeight,
+        );
         ctx.stroke();
 
         // left penalty arc
         ctx.beginPath();
-        ctx.arc(this.topLeft.x + this.penaltyAreaWidth, this.leftPenaltySpot.y, this.height / 18, Math.PI / 2, -Math.PI / 2, true);
+        ctx.arc(
+            this.topLeft.x + this.penaltyAreaWidth,
+            this.leftPenaltySpot.y,
+            this.height / 18,
+            Math.PI / 2,
+            -Math.PI / 2,
+            true,
+        );
         ctx.stroke();
 
         // right penalty arc
         ctx.beginPath();
-        ctx.arc(this.topRight.x - this.penaltyAreaWidth, this.rightPenaltySpot.y, this.height / 18, Math.PI / 2, -Math.PI / 2);
+        ctx.arc(
+            this.topRight.x - this.penaltyAreaWidth,
+            this.rightPenaltySpot.y,
+            this.height / 18,
+            Math.PI / 2,
+            -Math.PI / 2,
+        );
         ctx.stroke();
     }
 
@@ -225,14 +327,17 @@ export class Field {
         this.drawCornerArc(ctx, 'bottomRight');
     }
 
-    private drawCornerArc(ctx: CanvasRenderingContext2D, cornerSide: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight') {
+    private drawCornerArc(
+        ctx: CanvasRenderingContext2D,
+        cornerSide: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight',
+    ) {
         ctx.beginPath();
-        
+
         const cornerArcRadius = this.height / 30;
         let startAngle = 0;
         let endAngle = 0;
         let cornerPoint = { x: 0, y: 0 };
-        
+
         switch (cornerSide) {
             case 'topLeft':
                 startAngle = 0;
@@ -256,7 +361,13 @@ export class Field {
                 break;
         }
 
-        ctx.arc(cornerPoint.x, cornerPoint.y, cornerArcRadius, startAngle, endAngle);
+        ctx.arc(
+            cornerPoint.x,
+            cornerPoint.y,
+            cornerArcRadius,
+            startAngle,
+            endAngle,
+        );
         ctx.stroke();
     }
 }
