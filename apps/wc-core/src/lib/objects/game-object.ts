@@ -1,3 +1,8 @@
+export interface BaseCoordinates {
+    x: number;
+    y: number;
+}
+
 export abstract class GameObject {
     public x: number;
     public y: number;
