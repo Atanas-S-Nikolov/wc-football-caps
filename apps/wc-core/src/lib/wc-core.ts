@@ -1,5 +1,6 @@
 import { DEFAULT_WC_CONFIG } from './config/config';
 import { Ball } from './objects/ball';
+import { Cap } from './objects/cap';
 import { Field } from './objects/field';
 
 export const CANVAS_ID = 'wc-canvas-playground';
@@ -45,4 +46,11 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         DEFAULT_WC_CONFIG.ball.radius,
     );
     ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
+    const cap = new Cap(
+        fieldDimensions.topLeft.x + fieldDimensions.width / 4,
+        fieldDimensions.topLeft.y + fieldDimensions.height / 2,
+        DEFAULT_WC_CONFIG.cap.radius,
+        '',
+    );
+    cap.draw(ctx);
 };

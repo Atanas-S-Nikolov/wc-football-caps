@@ -26,5 +26,5 @@ export abstract class GameObject {
     /**
      * Draw object on Canvas.
      */
-    public abstract draw(ctx: CanvasRenderingContext2D, _config: object): void;
+    public abstract draw(ctx: CanvasRenderingContext2D, _config?: object): void;
 }

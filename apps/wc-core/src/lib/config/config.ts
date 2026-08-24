@@ -21,9 +21,14 @@ export interface BallConfig {
     radius: number;
 }
 
+export interface CapConfig {
+    radius: number;
+}
+
 export interface WCCoreConfig {
     field: FieldConfig;
     ball: BallConfig;
+    cap: CapConfig;
 }
 
 const DEFAULT_INNER_BACKGROUND_GRADIENT: GradientColors = {
@@ -42,5 +47,8 @@ export const DEFAULT_WC_CONFIG: WCCoreConfig = {
     ball: {
         color: '#FFFFFF',
         radius: 10,
+    },
+    cap: {
+        radius: 30,
     },
 };
