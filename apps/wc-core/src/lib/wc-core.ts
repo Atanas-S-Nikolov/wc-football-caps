@@ -1,4 +1,5 @@
 import { DEFAULT_WC_CONFIG } from './config/config';
+import { Ball } from './objects/ball';
 import { Field } from './objects/field';
 
 export const CANVAS_ID = 'wc-canvas-playground';
@@ -36,4 +37,12 @@ const initializePlayground = (): HTMLCanvasElement => {
 const draw = (ctx: CanvasRenderingContext2D) => {
     const field = new Field();
     field.draw(ctx, DEFAULT_WC_CONFIG.field);
+    const fieldDimensions = field.getDimensions();
+    const ballInitialPosition = fieldDimensions.centerSpot;
+    const ball = new Ball(
+        ballInitialPosition.x,
+        ballInitialPosition.y,
+        DEFAULT_WC_CONFIG.ball.radius,
+    );
+    ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
 };

@@ -4,10 +4,11 @@ import { BaseCoordinates } from './game-object';
 export interface FieldDimensions {
     width: number;
     height: number;
-    topLeft: { x: number; y: number };
-    topRight: { x: number; y: number };
-    bottomLeft: { x: number; y: number };
-    bottomRight: { x: number; y: number };
+    topLeft: BaseCoordinates;
+    topRight: BaseCoordinates;
+    bottomLeft: BaseCoordinates;
+    bottomRight: BaseCoordinates;
+    centerSpot: BaseCoordinates;
 }
 
 export interface GoalAreaSidePoints {
@@ -31,6 +32,7 @@ export class Field {
     private penaltyAreaHeight = 0;
     private leftPenaltySpot = { x: 0, y: 0 };
     private rightPenaltySpot = { x: 0, y: 0 };
+    private centerSpot = { x: 0, y: 0 };
     private goalAreaCoords: {
         left: GoalAreaSidePoints;
         right: GoalAreaSidePoints;
@@ -60,6 +62,7 @@ export class Field {
             topRight: this.topRight,
             bottomLeft: this.bottomLeft,
             bottomRight: this.bottomRight,
+            centerSpot: this.centerSpot,
         };
     }
 
@@ -109,6 +112,10 @@ export class Field {
         this.bottomRight = {
             x: offsetPercentage + this.width,
             y: offsetPercentage + this.height,
+        };
+        this.centerSpot = {
+            x: this.topLeft.x + this.width / 2,
+            y: this.topLeft.y + this.height / 2,
         };
         this.penaltyAreaWidth = this.width / 9;
         this.penaltyAreaHeight = this.height * 0.4;
@@ -244,13 +251,9 @@ export class Field {
         ctx.lineTo(topLeftLineCenter, this.topLeft.y + this.height);
         ctx.stroke();
 
-        const centerPoint = {
-            x: topLeftLineCenter,
-            y: this.topLeft.y + this.height / 2,
-        };
         const centerCircle = {
-            x: centerPoint.x,
-            y: centerPoint.y,
+            x: this.centerSpot.x,
+            y: this.centerSpot.y,
             radius: this.height / 7,
         };
         ctx.beginPath();

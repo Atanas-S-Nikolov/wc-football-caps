@@ -16,8 +16,14 @@ export interface FieldConfig {
     lineColor: string;
 }
 
+export interface BallConfig {
+    color: string;
+    radius: number;
+}
+
 export interface WCCoreConfig {
     field: FieldConfig;
+    ball: BallConfig;
 }
 
 const DEFAULT_INNER_BACKGROUND_GRADIENT: GradientColors = {
@@ -32,5 +38,9 @@ export const DEFAULT_WC_CONFIG: WCCoreConfig = {
         outerBackground: DEFAULT_INNER_BACKGROUND_GRADIENT.firstColor,
         innerBackground: DEFAULT_INNER_BACKGROUND_GRADIENT,
         lineColor: '#FFFFFF',
+    },
+    ball: {
+        color: '#FFFFFF',
+        radius: 10,
     },
 };
