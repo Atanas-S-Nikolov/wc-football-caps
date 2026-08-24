@@ -12,7 +12,14 @@
                 "outputPath": "dist/apps/wc-core",
                 "main": "apps/wc-core/src/index.ts",
                 "tsConfig": "apps/wc-core/tsconfig.lib.json",
-                "assets": ["apps/wc-core/*.md"]
+                "assets": [
+                    "apps/wc-core/*.md",
+                    {
+                        "glob": "**/*",
+                        "input": "apps/wc-core/src/assets",
+                        "output": "assets"
+                    }
+                ]
             }
         }
     }

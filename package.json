@@ -4,7 +4,10 @@
     "license": "MIT",
     "scripts": {
         "format:check": "prettier . --check",
-        "format": "prettier . --write"
+        "format": "prettier . --write",
+        "dev:core": "npx nx run wc-core:build -- --watch",
+        "dev:app": "npx nx run wc-app:preview",
+        "dev": "concurrently \"npm run dev:core\" \"npm run dev:app\""
     },
     "private": true,
     "dependencies": {
@@ -70,6 +73,7 @@
         "typescript-eslint": "^8.40.0",
         "vite": "^8.0.0",
         "vitest": "~4.1.0",
-        "webpack-merge": "^5.8.0"
+        "webpack-merge": "^5.8.0",
+        "concurrently": "^8.2.0"
     }
 }
