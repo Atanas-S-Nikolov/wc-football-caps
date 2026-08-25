@@ -1,10 +1,12 @@
 import { DEFAULT_WC_CONFIG } from './config/config';
+import { getFlagUrl } from './config/teams/team';
 import { Ball } from './objects/ball';
 import { Cap } from './objects/cap';
-import { Field } from './objects/field';
+import { Field, FieldDimensions } from './objects/field';
 
 export const CANVAS_ID = 'wc-canvas-playground';
-
+const TEAM_1 = 'es';
+const TEAM_2 = 'ar';
 export const run = (): void => {
     const canvas = initializePlayground();
     const ctx = canvas.getContext('2d');
@@ -46,11 +48,47 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         DEFAULT_WC_CONFIG.ball.radius,
     );
     ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
-    const cap = new Cap(
-        fieldDimensions.topLeft.x + fieldDimensions.width / 4,
-        fieldDimensions.topLeft.y + fieldDimensions.height / 2,
+    drawTeamCaps(
+        ctx,
+        fieldDimensions,
         DEFAULT_WC_CONFIG.cap.radius,
-        '',
+        TEAM_1,
+        'home',
     );
-    cap.draw(ctx);
+    drawTeamCaps(
+        ctx,
+        fieldDimensions,
+        DEFAULT_WC_CONFIG.cap.radius,
+        TEAM_2,
+        'away',
+    );
+};
+
+const drawTeamCaps = (
+    ctx: CanvasRenderingContext2D,
+    fieldDimensions: FieldDimensions,
+    capRadius: number,
+    teamId: string,
+    teamType: 'home' | 'away',
+) => {
+    createLogoImgElement(teamId, capRadius);
+    for (let i = 0; i < 5; i++) {
+        const isHomeTeam = teamType === 'home';
+        const capX = isHomeTeam
+            ? fieldDimensions.topLeft.x + fieldDimensions.width * (i / 10)
+            : fieldDimensions.topRight.x - fieldDimensions.width * (i / 10);
+        const capY = fieldDimensions.topLeft.y + fieldDimensions.height / 2;
+        const cap = new Cap(capX, capY, DEFAULT_WC_CONFIG.cap.radius, teamId);
+        cap.draw(ctx);
+    }
+};
+
+const createLogoImgElement = (teamId: string, capRadius: number): void => {
+    const img = document.createElement('img');
+    img.src = getFlagUrl(teamId);
+    img.id = `cap-background-${teamId}`;
+    img.height = capRadius;
+    img.width = capRadius;
+    img.style.display = 'none';
+    document.body.appendChild(img);
 };

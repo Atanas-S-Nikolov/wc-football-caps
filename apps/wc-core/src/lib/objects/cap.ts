@@ -9,7 +9,7 @@ export class Cap extends Body {
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        const backgroundImage = this.getLogoImgElement();
+        const backgroundImage = this.getLogoImgElement(this.teamId);
 
         if (backgroundImage.complete && backgroundImage.naturalWidth > 0) {
             this.fillWithLogo(ctx, backgroundImage);
@@ -21,16 +21,6 @@ export class Cap extends Body {
             () => this.fillWithLogo(ctx, backgroundImage),
             { once: true },
         );
-    }
-
-    private createLogoImgElement(): HTMLImageElement {
-        const img = document.createElement('img');
-        img.src = '/assets/test-logo.svg';
-        img.id = 'cap-background';
-        img.height = this.radius;
-        img.width = this.radius;
-        img.style.display = 'none';
-        return img;
     }
 
     private fillWithLogo(
@@ -63,17 +53,9 @@ export class Cap extends Body {
         ctx.fill();
     }
 
-    private getLogoImgElement(): HTMLImageElement {
-        let img = document.getElementById(
-            'cap-background',
-        ) as HTMLImageElement | null;
-
-        if (!img) {
-            img = this.createLogoImgElement();
-        }
-
-        document.body.appendChild(img);
-
-        return img;
+    private getLogoImgElement(teamId: string): HTMLImageElement {
+        return document.getElementById(
+            `cap-background-${teamId}`,
+        ) as HTMLImageElement;
     }
 }

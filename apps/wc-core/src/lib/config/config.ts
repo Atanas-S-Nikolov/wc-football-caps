@@ -23,6 +23,8 @@ export interface BallConfig {
 
 export interface CapConfig {
     radius: number;
+    countPerTeam: number;
+    teamId: string;
 }
 
 export interface WCCoreConfig {
@@ -46,9 +48,11 @@ export const DEFAULT_WC_CONFIG: WCCoreConfig = {
     },
     ball: {
         color: '#FFFFFF',
-        radius: 10,
+        radius: 15,
     },
     cap: {
-        radius: 30,
+        radius: 35,
+        countPerTeam: 5,
+        teamId: 'es',
     },
 };
