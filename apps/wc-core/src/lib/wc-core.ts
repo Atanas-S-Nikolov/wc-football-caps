@@ -1,8 +1,9 @@
-import { DEFAULT_WC_CONFIG } from './config/config';
-import { getFlagUrl } from './config/teams/team';
+import { CapConfig, DEFAULT_WC_CONFIG } from './config/config';
+import { getFlagUrl, TeamSide } from './config/teams/team';
 import { Ball } from './objects/ball';
 import { Cap } from './objects/cap';
 import { Field, FieldDimensions } from './objects/field';
+import { Formation, getFormationCoords } from './objects/formation';
 
 export const CANVAS_ID = 'wc-canvas-playground';
 const TEAM_1 = 'es';
@@ -50,35 +51,36 @@ const draw = (ctx: CanvasRenderingContext2D) => {
     ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
     drawTeamCaps(
         ctx,
+        DEFAULT_WC_CONFIG.cap,
         fieldDimensions,
-        DEFAULT_WC_CONFIG.cap.radius,
         TEAM_1,
+        '1-3-1',
         'home',
     );
     drawTeamCaps(
         ctx,
+        DEFAULT_WC_CONFIG.cap,
         fieldDimensions,
-        DEFAULT_WC_CONFIG.cap.radius,
         TEAM_2,
+        '2-2-1-narrow',
         'away',
     );
 };
 
 const drawTeamCaps = (
     ctx: CanvasRenderingContext2D,
+    config: CapConfig,
     fieldDimensions: FieldDimensions,
-    capRadius: number,
     teamId: string,
-    teamType: 'home' | 'away',
+    formation: Formation,
+    teamSide: TeamSide,
 ) => {
-    createLogoImgElement(teamId, capRadius);
-    for (let i = 0; i < 5; i++) {
-        const isHomeTeam = teamType === 'home';
-        const capX = isHomeTeam
-            ? fieldDimensions.topLeft.x + fieldDimensions.width * (i / 10)
-            : fieldDimensions.topRight.x - fieldDimensions.width * (i / 10);
-        const capY = fieldDimensions.topLeft.y + fieldDimensions.height / 2;
-        const cap = new Cap(capX, capY, DEFAULT_WC_CONFIG.cap.radius, teamId);
+    createLogoImgElement(teamId, config.radius);
+
+    const capsCoords = getFormationCoords(formation, fieldDimensions, teamSide);
+    for (let i = 0; i < capsCoords.length; i++) {
+        const capCoords = capsCoords[i];
+        const cap = new Cap(capCoords.x, capCoords.y, config.radius, teamId);
         cap.draw(ctx);
     }
 };

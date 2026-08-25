@@ -4,5 +4,7 @@ export interface Team {
     fifaCode: string;
 }
 
+export type TeamSide = 'home' | 'away';
+
 export const getFlagUrl = (id: string) =>
     `https://flags.restcountries.com/v5/w320/${id}.png`;
