@@ -7,4 +7,4 @@ export interface Team {
 export type TeamSide = 'home' | 'away';
 
 export const getFlagUrl = (id: string) =>
-    `https://flags.restcountries.com/v5/w320/${id}.png`;
+    `https://flags.restcountries.com/v5/svg/${id}.svg`;
