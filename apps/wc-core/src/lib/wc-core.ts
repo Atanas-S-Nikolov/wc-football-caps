@@ -1,10 +1,13 @@
-import { DEFAULT_WC_CONFIG } from './config/config';
+import { CapConfig, DEFAULT_WC_CONFIG } from './config/config';
+import { getFlagUrl, TeamSide } from './config/teams/team';
 import { Ball } from './objects/ball';
 import { Cap } from './objects/cap';
-import { Field } from './objects/field';
+import { Field, FieldDimensions } from './objects/field';
+import { Formation, getFormationCoords } from './objects/formation';
 
 export const CANVAS_ID = 'wc-canvas-playground';
-
+const TEAM_1 = 'es';
+const TEAM_2 = 'ar';
 export const run = (): void => {
     const canvas = initializePlayground();
     const ctx = canvas.getContext('2d');
@@ -46,11 +49,48 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         DEFAULT_WC_CONFIG.ball.radius,
     );
     ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
-    const cap = new Cap(
-        fieldDimensions.topLeft.x + fieldDimensions.width / 4,
-        fieldDimensions.topLeft.y + fieldDimensions.height / 2,
-        DEFAULT_WC_CONFIG.cap.radius,
-        '',
+    drawTeamCaps(
+        ctx,
+        DEFAULT_WC_CONFIG.cap,
+        fieldDimensions,
+        TEAM_1,
+        '1-3-1',
+        'home',
     );
-    cap.draw(ctx);
+    drawTeamCaps(
+        ctx,
+        DEFAULT_WC_CONFIG.cap,
+        fieldDimensions,
+        TEAM_2,
+        '2-2-1-narrow',
+        'away',
+    );
+};
+
+const drawTeamCaps = (
+    ctx: CanvasRenderingContext2D,
+    config: CapConfig,
+    fieldDimensions: FieldDimensions,
+    teamId: string,
+    formation: Formation,
+    teamSide: TeamSide,
+) => {
+    createLogoImgElement(teamId, config.radius);
+
+    const capsCoords = getFormationCoords(formation, fieldDimensions, teamSide);
+    for (let i = 0; i < capsCoords.length; i++) {
+        const capCoords = capsCoords[i];
+        const cap = new Cap(capCoords.x, capCoords.y, config.radius, teamId);
+        cap.draw(ctx);
+    }
+};
+
+const createLogoImgElement = (teamId: string, capRadius: number): void => {
+    const img = document.createElement('img');
+    img.src = getFlagUrl(teamId);
+    img.id = `cap-background-${teamId}`;
+    img.height = capRadius;
+    img.width = capRadius;
+    img.style.display = 'none';
+    document.body.appendChild(img);
 };

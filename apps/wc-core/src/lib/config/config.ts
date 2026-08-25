@@ -46,9 +46,9 @@ export const DEFAULT_WC_CONFIG: WCCoreConfig = {
     },
     ball: {
         color: '#FFFFFF',
-        radius: 10,
+        radius: 15,
     },
     cap: {
-        radius: 30,
+        radius: 35,
     },
 };
