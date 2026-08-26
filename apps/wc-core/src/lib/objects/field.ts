@@ -1,6 +1,17 @@
 import { FieldConfig, GradientColors } from '../config/config';
 import { BaseCoordinates } from './game-object';
 
+export interface GoalAreaSidePoints {
+    top: BaseCoordinates;
+    bottom: BaseCoordinates;
+}
+
+export interface GoalAreaCoordinates {
+    left: GoalAreaSidePoints;
+    right: GoalAreaSidePoints;
+    height: number;
+}
+
 export interface FieldDimensions {
     width: number;
     height: number;
@@ -9,50 +20,35 @@ export interface FieldDimensions {
     bottomLeft: BaseCoordinates;
     bottomRight: BaseCoordinates;
     centerSpot: BaseCoordinates;
+    goalAreaCoords: GoalAreaCoordinates;
 }
 
-export interface GoalAreaSidePoints {
-    top: BaseCoordinates;
-    bottom: BaseCoordinates;
-}
-
-const DEFAULT_GOAL_AREA_POINT: BaseCoordinates = { x: 0, y: 0 };
 const LINE_WIDTH = 3;
 const DOT_RADIUS = 5;
-const GOAL_BARS_ANGLE_OFFSET = { x: 12, y: 20 };
+const DEFAULT_GOAL_AREA_POINT: BaseCoordinates = { x: 0, y: 0 };
+
+export const DEFAULT_GOAL_ARE_COORDINATES: GoalAreaCoordinates = {
+    left: { top: DEFAULT_GOAL_AREA_POINT, bottom: DEFAULT_GOAL_AREA_POINT },
+    right: {
+        top: DEFAULT_GOAL_AREA_POINT,
+        bottom: DEFAULT_GOAL_AREA_POINT,
+    },
+    height: 0,
+};
 
 export class Field {
     private width = 0;
     private height = 0;
-    private topLeft = { x: 0, y: 0 };
-    private topRight = { x: 0, y: 0 };
-    private bottomLeft = { x: 0, y: 0 };
-    private bottomRight = { x: 0, y: 0 };
+    private topLeft = DEFAULT_GOAL_AREA_POINT;
+    private topRight = DEFAULT_GOAL_AREA_POINT;
+    private bottomLeft = DEFAULT_GOAL_AREA_POINT;
+    private bottomRight = DEFAULT_GOAL_AREA_POINT;
     private penaltyAreaWidth = 0;
     private penaltyAreaHeight = 0;
-    private leftPenaltySpot = { x: 0, y: 0 };
-    private rightPenaltySpot = { x: 0, y: 0 };
-    private centerSpot = { x: 0, y: 0 };
-    private goalAreaCoords: {
-        left: GoalAreaSidePoints;
-        right: GoalAreaSidePoints;
-        height: number;
-    } = {
-        left: { top: DEFAULT_GOAL_AREA_POINT, bottom: DEFAULT_GOAL_AREA_POINT },
-        right: {
-            top: DEFAULT_GOAL_AREA_POINT,
-            bottom: DEFAULT_GOAL_AREA_POINT,
-        },
-        height: 0,
-    };
-
-    getWidth() {
-        return this.width;
-    }
-
-    getHeight() {
-        return this.height;
-    }
+    private leftPenaltySpot = DEFAULT_GOAL_AREA_POINT;
+    private rightPenaltySpot = DEFAULT_GOAL_AREA_POINT;
+    private centerSpot = DEFAULT_GOAL_AREA_POINT;
+    private goalAreaCoords = DEFAULT_GOAL_ARE_COORDINATES;
 
     getDimensions(): FieldDimensions {
         return {
@@ -63,6 +59,7 @@ export class Field {
             bottomLeft: this.bottomLeft,
             bottomRight: this.bottomRight,
             centerSpot: this.centerSpot,
+            goalAreaCoords: this.goalAreaCoords,
         };
     }
 
@@ -162,7 +159,6 @@ export class Field {
         this.drawInnerField(ctx, config.innerBackground, config.lineColor);
         this.drawCenterLine(ctx, config.lineColor);
         this.drawPenaltyAreas(ctx, config.lineColor);
-        this.drawGoal(ctx, config.lineColor);
         this.drawCornerArcs(ctx, config.lineColor);
     }
 
@@ -361,124 +357,6 @@ export class Field {
             Math.PI / 2,
             -Math.PI / 2,
         );
-        ctx.stroke();
-    }
-
-    private drawGoal(ctx: CanvasRenderingContext2D, lineColor: string) {
-        this.drawGoalSide(ctx, lineColor, 'left');
-        this.drawGoalSide(ctx, lineColor, 'right');
-    }
-
-    private drawGoalSide(
-        ctx: CanvasRenderingContext2D,
-        lineColor: string,
-        side: 'left' | 'right',
-    ) {
-        const direction = side === 'left' ? -1 : 1;
-        const goalArea = this.goalAreaCoords[side];
-
-        ctx.strokeStyle = lineColor;
-        ctx.lineWidth = 4;
-
-        const topPoint = goalArea.top;
-        const topAngleX = topPoint.x + direction * GOAL_BARS_ANGLE_OFFSET.x;
-        const topAngleY = topPoint.y - GOAL_BARS_ANGLE_OFFSET.y;
-        ctx.beginPath();
-        ctx.moveTo(topPoint.x, topPoint.y);
-        ctx.lineTo(topAngleX, topAngleY);
-        const bottomPoint = goalArea.bottom;
-        const bottomAngleX =
-            bottomPoint.x + direction * GOAL_BARS_ANGLE_OFFSET.x;
-        const bottomAngleY = bottomPoint.y - GOAL_BARS_ANGLE_OFFSET.y;
-        ctx.lineTo(bottomAngleX, bottomAngleY);
-        ctx.lineTo(bottomPoint.x, bottomPoint.y);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.lineWidth = 1;
-        const topNetX = topAngleX + direction * 28;
-        const bottomNetX = bottomAngleX + direction * 28;
-        ctx.moveTo(topPoint.x, topPoint.y);
-        ctx.lineTo(topNetX, topPoint.y);
-        ctx.moveTo(topAngleX, topAngleY);
-        ctx.lineTo(topNetX, topAngleY);
-        ctx.lineTo(bottomNetX, bottomAngleY);
-        ctx.lineTo(bottomAngleX, bottomAngleY);
-        ctx.stroke();
-
-        [28, 21, 14, 7].forEach((offset) => {
-            this.drawNetSideVerticalRope(
-                ctx,
-                topAngleX,
-                topAngleY,
-                topPoint,
-                offset,
-                direction,
-            );
-        });
-
-        [21, 14, 7].forEach((offset) => {
-            this.drawNetTopLongRope(
-                ctx,
-                topAngleX,
-                topAngleY,
-                bottomAngleX,
-                bottomAngleY,
-                offset,
-                direction,
-            );
-        });
-
-        [28, 21, 14, 7].forEach((offset) => {
-            this.drawNetSideVerticalRope(
-                ctx,
-                bottomAngleX,
-                bottomAngleY,
-                bottomPoint,
-                offset,
-                direction,
-            );
-        });
-
-        ctx.beginPath();
-        ctx.moveTo(bottomNetX, bottomAngleY);
-        ctx.lineTo(bottomNetX, bottomAngleY + GOAL_BARS_ANGLE_OFFSET.y);
-        ctx.lineTo(
-            bottomAngleX - direction * GOAL_BARS_ANGLE_OFFSET.x,
-            bottomAngleY + GOAL_BARS_ANGLE_OFFSET.y,
-        );
-        ctx.stroke();
-    }
-
-    private drawNetTopLongRope(
-        ctx: CanvasRenderingContext2D,
-        topLeftAngleX: number,
-        topLeftAngleY: number,
-        bottomLeftAngleX: number,
-        bottomLeftAngleY: number,
-        offsetFromTopBar: number,
-        direction: number,
-    ) {
-        ctx.beginPath();
-        ctx.moveTo(topLeftAngleX + direction * offsetFromTopBar, topLeftAngleY);
-        ctx.lineTo(
-            bottomLeftAngleX + direction * offsetFromTopBar,
-            bottomLeftAngleY,
-        );
-        ctx.stroke();
-    }
-
-    private drawNetSideVerticalRope(
-        ctx: CanvasRenderingContext2D,
-        leftAngleX: number,
-        leftAngleY: number,
-        leftPoint: BaseCoordinates,
-        offsetFromSideBar: number,
-        direction: number,
-    ) {
-        ctx.beginPath();
-        ctx.moveTo(leftAngleX + direction * offsetFromSideBar, leftAngleY);
-        ctx.lineTo(leftPoint.x + direction * offsetFromSideBar, leftPoint.y);
         ctx.stroke();
     }
 
