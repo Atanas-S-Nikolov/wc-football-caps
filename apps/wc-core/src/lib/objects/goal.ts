@@ -1,10 +1,10 @@
-import { DEFAULT_GOAL_ARE_COORDINATES, GoalAreaCoordinates } from './field';
+import { DEFAULT_GOAL_AREA_COORDINATES, GoalAreaCoordinates } from './field';
 import { BaseCoordinates } from './game-object';
 
 const GOAL_BARS_ANGLE_OFFSET = { x: 12, y: 20 };
 
 export class Goal {
-    private goalAreaCoords = DEFAULT_GOAL_ARE_COORDINATES;
+    private goalAreaCoords = DEFAULT_GOAL_AREA_COORDINATES;
 
     constructor(goalAreaCoords: GoalAreaCoordinates) {
         this.goalAreaCoords = goalAreaCoords;

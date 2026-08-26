@@ -27,7 +27,7 @@ const LINE_WIDTH = 3;
 const DOT_RADIUS = 5;
 const DEFAULT_GOAL_AREA_POINT: BaseCoordinates = { x: 0, y: 0 };
 
-export const DEFAULT_GOAL_ARE_COORDINATES: GoalAreaCoordinates = {
+export const DEFAULT_GOAL_AREA_COORDINATES: GoalAreaCoordinates = {
     left: { top: DEFAULT_GOAL_AREA_POINT, bottom: DEFAULT_GOAL_AREA_POINT },
     right: {
         top: DEFAULT_GOAL_AREA_POINT,
@@ -48,7 +48,7 @@ export class Field {
     private leftPenaltySpot = DEFAULT_GOAL_AREA_POINT;
     private rightPenaltySpot = DEFAULT_GOAL_AREA_POINT;
     private centerSpot = DEFAULT_GOAL_AREA_POINT;
-    private goalAreaCoords = DEFAULT_GOAL_ARE_COORDINATES;
+    private goalAreaCoords = DEFAULT_GOAL_AREA_COORDINATES;
 
     getDimensions(): FieldDimensions {
         return {
