@@ -4,11 +4,12 @@ import { Ball } from './objects/ball';
 import { Cap } from './objects/cap';
 import { Field, FieldDimensions } from './objects/field';
 import { Formation, getFormationCoords } from './objects/formation';
+import { Goal } from './objects/goal';
 
 export const CANVAS_ID = 'wc-canvas-playground';
 const TEAM_1 = 'es';
 const TEAM_2 = 'ar';
-export const run = (): void => {
+export const run = async (): Promise<void> => {
     const canvas = initializePlayground();
     const ctx = canvas.getContext('2d');
 
@@ -19,7 +20,7 @@ export const run = (): void => {
         return;
     }
 
-    draw(ctx);
+    await draw(ctx);
 };
 
 const initializePlayground = (): HTMLCanvasElement => {
@@ -38,10 +39,11 @@ const initializePlayground = (): HTMLCanvasElement => {
     return canvas;
 };
 
-const draw = (ctx: CanvasRenderingContext2D) => {
+const draw = async (ctx: CanvasRenderingContext2D): Promise<void> => {
     const field = new Field();
     field.draw(ctx, DEFAULT_WC_CONFIG.field);
     const fieldDimensions = field.getDimensions();
+
     const ballInitialPosition = fieldDimensions.centerSpot;
     const ball = new Ball(
         ballInitialPosition.x,
@@ -49,7 +51,8 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         DEFAULT_WC_CONFIG.ball.radius,
     );
     ball.draw(ctx, DEFAULT_WC_CONFIG.ball);
-    drawTeamCaps(
+
+    const firstTeamCapsDrawn = drawTeamCaps(
         ctx,
         DEFAULT_WC_CONFIG.cap,
         fieldDimensions,
@@ -57,7 +60,7 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         '1-3-1',
         'home',
     );
-    drawTeamCaps(
+    const secondTeamCapsDrawn = drawTeamCaps(
         ctx,
         DEFAULT_WC_CONFIG.cap,
         fieldDimensions,
@@ -65,24 +68,30 @@ const draw = (ctx: CanvasRenderingContext2D) => {
         '2-2-1-narrow',
         'away',
     );
+    await Promise.all([firstTeamCapsDrawn, secondTeamCapsDrawn]);
+
+    const goal = new Goal(fieldDimensions.goalAreaCoords);
+    goal.draw(ctx, DEFAULT_WC_CONFIG.field.lineColor);
 };
 
-const drawTeamCaps = (
+const drawTeamCaps = async (
     ctx: CanvasRenderingContext2D,
     config: CapConfig,
     fieldDimensions: FieldDimensions,
     teamId: string,
     formation: Formation,
     teamSide: TeamSide,
-) => {
+): Promise<void> => {
     createLogoImgElement(teamId, config.radius);
 
     const capsCoords = getFormationCoords(formation, fieldDimensions, teamSide);
+    const capDrawPromises: Promise<void>[] = [];
     for (let i = 0; i < capsCoords.length; i++) {
         const capCoords = capsCoords[i];
         const cap = new Cap(capCoords.x, capCoords.y, config.radius, teamId);
-        cap.draw(ctx);
+        capDrawPromises.push(cap.draw(ctx));
     }
+    await Promise.all(capDrawPromises);
 };
 
 const createLogoImgElement = (teamId: string, capRadius: number): void => {

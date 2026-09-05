@@ -8,19 +8,27 @@ export class Cap extends Body {
         this.teamId = teamId;
     }
 
-    public draw(ctx: CanvasRenderingContext2D): void {
+    public draw(ctx: CanvasRenderingContext2D): Promise<void> {
         const backgroundImage = this.getLogoImgElement(this.teamId);
 
         if (backgroundImage.complete && backgroundImage.naturalWidth > 0) {
             this.fillWithLogo(ctx, backgroundImage);
-            return;
+            return Promise.resolve();
         }
 
-        backgroundImage.addEventListener(
-            'load',
-            () => this.fillWithLogo(ctx, backgroundImage),
-            { once: true },
-        );
+        return new Promise((resolve) => {
+            backgroundImage.addEventListener(
+                'load',
+                () => {
+                    this.fillWithLogo(ctx, backgroundImage);
+                    resolve();
+                },
+                { once: true },
+            );
+            backgroundImage.addEventListener('error', () => resolve(), {
+                once: true,
+            });
+        });
     }
 
     private fillWithLogo(
