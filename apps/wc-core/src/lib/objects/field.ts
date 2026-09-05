@@ -124,26 +124,27 @@ export class Field {
             x: this.topLeft.x + this.width * 0.92,
             y: this.topLeft.y + this.height / 2,
         };
-        const goalLineHeight = this.penaltyAreaHeight / 2;
+        const goalLineHeight = this.penaltyAreaHeight * 0.6;
+        const goalAreaTop = this.centerSpot.y - goalLineHeight / 2;
         this.goalAreaCoords = {
             left: {
                 top: {
                     x: this.topLeft.x,
-                    y: this.topLeft.y + this.height * 0.4,
+                    y: goalAreaTop,
                 },
                 bottom: {
                     x: this.topLeft.x,
-                    y: this.topLeft.y + this.height * 0.4 + goalLineHeight,
+                    y: goalAreaTop + goalLineHeight,
                 },
             },
             right: {
                 top: {
                     x: this.topRight.x,
-                    y: this.topRight.y + this.height * 0.4,
+                    y: goalAreaTop,
                 },
                 bottom: {
                     x: this.topRight.x,
-                    y: this.topRight.y + this.height * 0.4 + goalLineHeight,
+                    y: goalAreaTop + goalLineHeight,
                 },
             },
             height: goalLineHeight,
@@ -315,12 +316,13 @@ export class Field {
         ctx.fill();
 
         const goalAreaWidth = this.penaltyAreaWidth / 2.5;
+        const goalAreaTop = this.goalAreaCoords.left.top.y;
 
         // left goal area
         ctx.beginPath();
         ctx.rect(
             this.topLeft.x,
-            this.topLeft.y + this.height * 0.4,
+            goalAreaTop,
             goalAreaWidth,
             this.goalAreaCoords.height,
         );
@@ -330,7 +332,7 @@ export class Field {
         ctx.beginPath();
         ctx.rect(
             this.topRight.x - goalAreaWidth,
-            this.topRight.y + this.height * 0.4,
+            goalAreaTop,
             goalAreaWidth,
             this.goalAreaCoords.height,
         );
