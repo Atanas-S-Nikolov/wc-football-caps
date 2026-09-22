@@ -2,6 +2,7 @@ import { DEFAULT_GOAL_AREA_COORDINATES, GoalAreaCoordinates } from './field';
 import { BaseCoordinates } from './game-object';
 
 const GOAL_BARS_ANGLE_OFFSET = { x: 12, y: 20 };
+export const GOAL_NET_DEPTH = GOAL_BARS_ANGLE_OFFSET.x + 28;
 
 export class Goal {
     private goalAreaCoords = DEFAULT_GOAL_AREA_COORDINATES;
