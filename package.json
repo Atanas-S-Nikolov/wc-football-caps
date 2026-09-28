@@ -9,6 +9,7 @@
         "build:app": "npx nx run wc-app:build",
         "dev:core": "npx nx run wc-core:build -- --watch",
         "dev:app": "npx nx run wc-app:preview",
+        "build": "npm run build:core && npm run build:app",
         "dev": "concurrently \"npm run dev:core\" \"npm run dev:app\""
     },
     "private": true,
