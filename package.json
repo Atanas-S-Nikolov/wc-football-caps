@@ -5,6 +5,8 @@
     "scripts": {
         "format:check": "prettier . --check",
         "format": "prettier . --write",
+        "build:core": "npx nx run wc-core:build",
+        "build:app": "npx nx run wc-app:build",
         "dev:core": "npx nx run wc-core:build -- --watch",
         "dev:app": "npx nx run wc-app:preview",
         "dev": "concurrently \"npm run dev:core\" \"npm run dev:app\""
